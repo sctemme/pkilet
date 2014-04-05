@@ -67,6 +67,20 @@ case $1 in
           -out ${caname}/serial
     RET=$?
     ;;
+-newleaf)
+    commonname=$2
+    shift
+    dir=leaves
+    mkdir -p $dir
+    # CSR for leaf certificate
+    $REQ -new -newkey rsa:2048 -keyout ${dir}/${commonname}_key.pem -nodes \
+         -out ${dir}/${commonname}_req.pem -extensions v3_req \
+         -subj "/C=US/ST=Colorado/O=ASF/OU=Apache HTTP Server/CN=${commonname}"
+    # Now sign it with the issuing CA
+    $CA -name issuingCA -policy policy_anything -out ${dir}/${commonname}_cert.pem \
+        -batch -extensions ssl_cert -infiles ${dir}/${commonname}_req.pem
+    RET=$?
+    ;;
 *)
     echo "Unknown arg $i" >&2
     usage

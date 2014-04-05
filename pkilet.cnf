@@ -124,6 +124,22 @@ challengePassword_max		= 20
 
 unstructuredName		= An optional company name
 
+[ ssl_cert ]
+
+basicConstraints=CA:FALSE
+nsCertType = server
+keyUsage=keyEncipherment, keyAgreement
+extendedKeyUsage=serverAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+
+[ v3_req ]
+
+# Extensions to add to a certificate request
+
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+
 [ v3_ca ]
 subjectKeyIdentifier=hash
 basicConstraints = CA:true
