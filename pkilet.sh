@@ -45,7 +45,7 @@ case $1 in
     mkdirs ${caname}
     echo "Making Root CA certificate ..."
     $REQ -new -newkey rsa:4096 -keyout ${caname}/private/$CAKEY -nodes -out ${caname}/$CAREQ \
-           -subj "/C=US/ST=Colorado/O=Apache Software Foundation/CN=PKI-Let Root CA"
+           -subj "/C=US/ST=California/O=Fortanix, Inc./CN=PKI-Let Private Root CA"
     $CA -create_serial -out ${caname}/$CACERT $CADAYS -batch \
            -keyfile ${caname}/private/$CAKEY -selfsign \
            -extensions v3_ca -name ${caname} \
@@ -57,7 +57,7 @@ case $1 in
     mkdirs ${caname}
     echo "Making Issuing CA certificate ..."
     $REQ -new -newkey rsa:2048 -keyout ${caname}/private/$CAKEY -nodes -out ${caname}/$CAREQ \
-         -subj "/C=US/ST=Colorado/O=ASF/OU=Apache HTTP Server/CN=PKI-Let Issuing CA"
+         -subj "/C=US/ST=California/O=Fortanix, Inc./OU=Product Management/CN=PKI-Let Issuing CA"
     # Now sign it with the root CA
     $CA -name rootCA -policy policy_anything -out ${caname}/$CACERT -batch \
         -extensions v3_ca -infiles ${caname}/$CAREQ
@@ -75,10 +75,10 @@ case $1 in
     # CSR for leaf certificate
     $REQ -new -newkey rsa:2048 -keyout ${dir}/${commonname}_key.pem -nodes \
          -out ${dir}/${commonname}_req.pem -extensions v3_req \
-         -subj "/C=US/ST=Colorado/O=ASF/OU=Apache HTTP Server/CN=${commonname}"
+         -subj "/CN=Nicholas o'Kelley/emailAddress=${commonname}"
     # Now sign it with the issuing CA
     $CA -name issuingCA -policy policy_anything -out ${dir}/${commonname}_cert.pem \
-        -batch -extensions ssl_cert -infiles ${dir}/${commonname}_req.pem
+        -batch -extensions v3_SMIME -infiles ${dir}/${commonname}_req.pem
     RET=$?
     ;;
 *)
